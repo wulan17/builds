@@ -59,9 +59,10 @@ Build Date : ""$(env TZ=$timezone date)""
 
         echo "Uploading"
 
-        ../github-release "$release_repo" "$tag" "master" ""$ROM" for "$device"
+#        ../github-release "$release_repo" "$tag" "master" ""$ROM" for "$device"
 
-Date: $(env TZ="$timezone" date)" "$finalzip_path"
+#Date: $(env TZ="$timezone" date)" "$finalzip_path"
+cp $finalzip_path ~/gdrive/
 
         echo "Uploaded"
 
@@ -74,9 +75,7 @@ Brand : "$oem"
 Type : UNOFFICIAL
 Dev : ""$KBUILD_BUILD_USER""
 Build Date : ""$(env TZ=$timezone date)""
-Status : Not Tested
-
-Download: ["$zip_name"](https://github.com/"$release_repo"/releases/download/"$tag"/"$zip_name")"
+Status : Not Tested"
 
     else
         echo "Build failed in $((BUILD_DIFF / 60)) minute(s) and $((BUILD_DIFF % 60)) seconds"
