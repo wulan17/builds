@@ -1,5 +1,5 @@
 export device=cactus # device codename
-export telegram="12345:abcd" # Telegram Bot Token
+export telegram="12345:abcd" # Telegram Bot Token, Get in @BotFather
 export chat="-1234" # Telegram Chat/Channel Id
 export sticker="CAACAgUAAx0CUvrZngABBYwUXk5nQJfMaY7oEw5sD97D5XNhNnsAApEAA2otjDPaQ_65alL0KxgE" #Telegram Sticker Id
 export user=wulan17 # Your Username
