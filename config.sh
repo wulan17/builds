@@ -10,5 +10,5 @@ export branch="ten" # Rom Branch
 export vendor="komodo" # Rom Vendor Name
 export release_repo="wulan17/pre-release" # Release Repo
 export GITHUB_TOKEN="81973" # Github Api Token
-echo timezone="Asia/Jakarta" # Your Time Zone
+export timezone="Asia/Jakarta" # Your Time Zone
 export outdir="out/target/product/$device"
