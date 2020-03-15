@@ -12,14 +12,14 @@ export release_repo="" # release repository name | <username/repo_name>
 export GITHUB_TOKEN="" # Github Api Key
 export outdir="out/target/product/$device"
 if [[ (! -x $1)&&($1 == "sync") ]]||[[ (! -x $2)&&($2 == "sync") ]];then
-	export SYNC=true
+	export SYNC="yes"
 else
-	export SYNC=false
+	export SYNC="no"
 fi
 if [[ (! -x $1)&&($1 == "clean") ]]||[[ (! -x $2)&&($2 == "clean") ]];then
-	export CLEAN=true
+	export CLEAN="yes"
 else
-	export CLEAN=false
+	export CLEAN="no"
 fi
 
 function sync(){
@@ -49,7 +49,8 @@ function success(){
 	fi
 	./github-release "$release_repo" "$tag" "master" """$ROM"" for ""$device""
 	Date: $(env TZ="$timezone" date)" "$file_path"
-	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Build completed successfully in $(((BUILD_DIFF / 60) / 60)):$(((BUILD_DIFF / 60) % 60)):$((BUILD_DIFF % 60))<br/>Download: <a href='https://github.com/$release_repo/releases/download/$tag/$zip_name'>$zip_name</a>" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/null
+	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Build completed successfully in $(((BUILD_DIFF / 60) / 60)):$(((BUILD_DIFF / 60) % 60)):$((BUILD_DIFF % 60))
+Download: <a href='https://github.com/$release_repo/releases/download/$tag/$zip_name'>$zip_name</a>" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/null
 }
 function failed(){
 	curl -F "chat_id=$chat" -F document=@"$HOME"/log-$(echo "$vendor").txt -F "parse_mode=html" -F "caption=Build failed in $(((BUILD_DIFF / 60) / 60)):$(((BUILD_DIFF / 60) % 60)):$((BUILD_DIFF % 60))" https://api.telegram.org/bot"$telegram"/sendDocument > /dev/null
@@ -70,7 +71,8 @@ function check_build(){
 	fi
 }
 function build(){
-	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Build Started For <a href='$repo'>$rom $branch</a><br />Device : $device" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/null
+	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Build Started For <a href='$repo'>$rom $branch</a>
+Device : $device" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/null
 	BUILD_START=$(date +"%s")
 	source build/envsetup.sh
 	#breakfast $device
@@ -86,10 +88,10 @@ function build(){
 
 function main(){
 	curl -F "chat_id=$chat" -F "sticker=$sticker" https://api.telegram.org/bot"$telegram"/sendSticker > /dev/null
-	if [ $SYNC==true ]; then
+	if [ "$SYNC" == "yes" ]; then
 		sync
 	fi
-	if [ $CLEAN==true ]; then
+	if [ "$CLEAN" == "yes" ]; then
 		clean
 	fi
 	check_old
