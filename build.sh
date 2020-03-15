@@ -28,7 +28,7 @@ function sync(){
 	repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 	SYNC_END=$(date +"%s")
 	SYNC_DIFF=$((SYNC_END - SYNC_START))
-	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Sync completed in ((($SYNC_DIFF / 60) / 60)):$(((SYNC_DIFF / 60) % 60)):$((SYNC_DIFF % 60))" https://api.telegram.org/bot$telegram/sendMessage > /dev/null
+	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Sync completed in $(((SYNC_DIFF / 60) / 60)):$(((SYNC_DIFF / 60) % 60)):$((SYNC_DIFF % 60))" https://api.telegram.org/bot$telegram/sendMessage > /dev/null
 }
 function clean(){
 	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Cleaning old builds..." https://api.telegram.org/bot$telegram/sendMessage > /dev/null
@@ -49,10 +49,10 @@ function success(){
 	fi
 	./github-release "$release_repo" "$tag" "master" ""$ROM" for "$device"
 	Date: $(env TZ="$timezone" date)" "$file_path"
-	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Build completed successfully in $(((BUILD_DIFF / 60) / 60)):(((BUILD_DIFF / 60) % 60)):$((BUILD_DIFF % 60))<br/>Download: <a href='https://github.com/$release_repo/releases/download/$tag/$zip_name'>$zip_name</a>" https://api.telegram.org/bot$telegram/sendMessage > /dev/null
+	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Build completed successfully in $(((BUILD_DIFF / 60) / 60)):$(((BUILD_DIFF / 60) % 60)):$((BUILD_DIFF % 60))<br/>Download: <a href='https://github.com/$release_repo/releases/download/$tag/$zip_name'>$zip_name</a>" https://api.telegram.org/bot$telegram/sendMessage > /dev/null
 }
 function failed(){
-	curl -F "chat_id=$chat" -F document=@$HOME/log-$(echo $vendor).txt -F "parse_mode=html" -F "caption=Build failed in $(((BUILD_DIFF / 60) / 60)):(((BUILD_DIFF / 60) % 60)):$((BUILD_DIFF % 60))" https://api.telegram.org/bot$telegram/sendDocument > /dev/null
+	curl -F "chat_id=$chat" -F document=@$HOME/log-$(echo $vendor).txt -F "parse_mode=html" -F "caption=Build failed in $(((BUILD_DIFF / 60) / 60)):$(((BUILD_DIFF / 60) % 60)):$((BUILD_DIFF % 60))" https://api.telegram.org/bot$telegram/sendDocument > /dev/null
 }
 function check_build(){
 	if [[ -z $(find $outdir/*2020*.zip | cut -d "/" -f 5) ]]; then
@@ -62,7 +62,7 @@ function check_build(){
 		if [ $md5 == $last_md5 ]; then
 			failed
 		else
-			export $tag=$md5
+			export tag=$md5
 			success
 		fi
 	else
