@@ -11,16 +11,6 @@ export vendor="" # Rom vendor name | lineage,aosp,etc.
 export release_repo="" # release repository name | <username/repo_name>
 export GITHUB_TOKEN="" # Github Api Key
 export outdir="out/target/product/$device"
-if [[ (! -x $1)&&($1 == "sync") ]]||[[ (! -x $2)&&($2 == "sync") ]];then
-	export SYNC="yes"
-else
-	export SYNC="no"
-fi
-if [[ (! -x $1)&&($1 == "clean") ]]||[[ (! -x $2)&&($2 == "clean") ]];then
-	export CLEAN="yes"
-else
-	export CLEAN="no"
-fi
 
 function sync(){
 	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Sync Started" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/null
@@ -43,20 +33,20 @@ function check_old(){
 	fi
 }
 function success(){
-	if [[ -z "github-release" ]]; then
+	if [[ -z $(ls github-release) ]]; then
 		wget https://github.com/wulan17/builds/raw/master/github-release
 		chmod +x github-release
 	fi
 	./github-release "$release_repo" "$tag" "master" """$ROM"" for ""$device""
 	Date: $(env TZ="$timezone" date)" "$file_path"
 	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Build completed successfully in $(((BUILD_DIFF / 60) / 60)):$(((BUILD_DIFF / 60) % 60)):$((BUILD_DIFF % 60))
-Download: <a href='https://github.com/$release_repo/releases/download/$tag/$zip_name'>$zip_name</a>" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/null
+Download: <a href='https://github.com/$release_repo/releases/download/$tag/$file_name'>$file_name</a>" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/null
 }
 function failed(){
 	curl -F "chat_id=$chat" -F document=@"$HOME"/log-$(echo "$vendor").txt -F "parse_mode=html" -F "caption=Build failed in $(((BUILD_DIFF / 60) / 60)):$(((BUILD_DIFF / 60) % 60)):$((BUILD_DIFF % 60))" https://api.telegram.org/bot"$telegram"/sendDocument > /dev/null
 }
 function check_build(){
-	if [[ -e $(find $outdir/*2020*.zip | cut -d "/" -f 5) ]]; then
+	if [[ ! -z $(find $outdir/*2020*.zip | cut -d "/" -f 5) ]]; then
 		export file_path=$(ls $outdir/*2020*.zip | tail -n -1)
 		export file_name=$(echo "$file_path" | cut -d "/" -f 5)
 		md5=$(md5sum "$file_path" | cut -d ' ' -f 1)
@@ -88,10 +78,10 @@ Device : $device" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/nul
 
 function main(){
 	curl -F "chat_id=$chat" -F "sticker=$sticker" https://api.telegram.org/bot"$telegram"/sendSticker > /dev/null
-	if [ "$SYNC" == "yes" ]; then
+	if [[ (! -x $1)&&($1 == "sync") ]]||[[ (! -x $2)&&($2 == "sync") ]];then
 		sync
 	fi
-	if [ "$CLEAN" == "yes" ]; then
+	if [[ (! -x $1)&&($1 == "clean") ]]||[[ (! -x $2)&&($2 == "clean") ]];then
 		clean
 	fi
 	check_old
