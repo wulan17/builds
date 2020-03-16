@@ -65,13 +65,13 @@ function build(){
 Device : $device" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/null
 	BUILD_START=$(date +"%s")
 	source build/envsetup.sh
-	#breakfast $device
-	lunch "$vendor"_"$device"-userdebug
-	#brunch $device > ~/log-$vendor.txt
-	#make aex -j$(nproc --all) > ~/log-$vendor.txt
-	#make otapackage -j$(nproc --all) > ~/log-$vendor.txt
-	#mka kronic -j$(nproc --all) > ~/log-$vendor.txt
-	mka bacon -j$(nproc --all) > ~/log-"$vendor".txt
+	#breakfast $device > ~/log-"$vendor".txt
+	lunch "$vendor"_"$device"-userdebug > ~/log-"$vendor".txt
+	#brunch $device >> ~/log-"$vendor".txt
+	#make aex -j$(nproc --all) >> ~/log-"$vendor".txt
+	#make otapackage -j$(nproc --all) >> ~/log-"$vendor".txt
+	#mka kronic -j$(nproc --all) >> ~/log-"$vendor".txt
+	mka bacon -j$(nproc --all) >> ~/log-"$vendor".txt
 	BUILD_END=$(date +"%s")
 	export BUILD_DIFF=$((BUILD_END - BUILD_START))
 }
