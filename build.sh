@@ -12,6 +12,17 @@ export release_repo="" # release repository name | <username/repo_name>
 export GITHUB_TOKEN="" # Github Api Key
 export outdir="out/target/product/$device"
 
+if [[ (! -x $1)&&($1 == "sync") ]]||[[ (! -x $2)&&($2 == "sync") ]];then
+	export with_sync="yes"
+else
+	export with_sync="no"
+fi
+
+if [[ (! -x $1)&&($1 == "clean") ]]||[[ (! -x $2)&&($2 == "clean") ]];then
+	export with_clean="yes"
+else
+	export with_clean="no"
+fi
 function sync(){
 	curl -F "chat_id=$chat" -F "parse_mode=html" -F "text=Sync Started" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/null
 	SYNC_START=$(date +"%s")
@@ -78,10 +89,10 @@ Device : $device" https://api.telegram.org/bot"$telegram"/sendMessage > /dev/nul
 
 function main(){
 	curl -F "chat_id=$chat" -F "sticker=$sticker" https://api.telegram.org/bot"$telegram"/sendSticker > /dev/null
-	if [[ (! -x $1)&&($1 == "sync") ]]||[[ (! -x $2)&&($2 == "sync") ]];then
+	if [ "$with_sync" == "yes" ]; then
 		sync
 	fi
-	if [[ (! -x $1)&&($1 == "clean") ]]||[[ (! -x $2)&&($2 == "clean") ]];then
+	if [ "$with_clean" == "yes" ]; then
 		clean
 	fi
 	check_old
